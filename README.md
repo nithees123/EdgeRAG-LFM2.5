@@ -6,8 +6,8 @@
 [![Peak RAM: < 1.5 GB](https://img.shields.io/badge/Peak%20RAM-%3C%201.5%20GB-purple.svg)]()
 [![TTFT: 25.0 ms](https://img.shields.io/badge/TTFT%20Latency-25.0%20ms-red.svg)]()
 
-> **Official Repository** for the IEEE Conference Paper: *"EdgeRAG: A Sub-2B Parameter Unified RAG Stack via Hybrid Liquid Foundation Models"*.  
-> Includes source code, benchmark suites, high-resolution figures, IEEE Word documents (`.docx`), and evaluation reports.
+> **EdgeRAG**: Sub-2B Parameter Unified RAG Stack via Hybrid Liquid Foundation Models (LFM2.5).  
+> Includes source code, benchmark suites, high-resolution figures, and empirical evaluation reports.
 
 ---
 
@@ -44,17 +44,17 @@
 
 ---
 
-## 📊 Comparative Performance Across SOTA RAG Conferences
+## 📊 Comparative Performance Across SOTA RAG Architectures
 
-| System Architecture | Conference / Venue | Backbone Model | Peak RAM | TTFT (ms) | Grounded Accuracy | Citation Precision | Recall | F1 Score |
+| System Architecture | Benchmark Venue | Backbone Model | Peak RAM | TTFT (ms) | Grounded Accuracy | Citation Precision | Recall | F1 Score |
 |---|---|---|---|---|---|---|---|---|
-| **Self-RAG** | NeurIPS 2023 | Llama-2-13B | 14.5 GB | 180.0 ms | 0.8120 | 0.8350 | 0.7920 | 0.8129 |
-| **CRAG (Corrective RAG)** | ICML 2024 | Llama-3-8B | 16.0 GB | 210.0 ms | 0.8460 | 0.8510 | 0.8010 | 0.8252 |
-| **GraphRAG** | EMNLP 2024 | GPT-4o / 70B | 24.0 GB | 1200.0 ms | 0.8840 | 0.8720 | 0.8340 | 0.8524 |
-| **Dense-ColBERT** | SIGIR 2024 | Llama-3-8B | 16.2 GB | 145.0 ms | 0.8620 | 0.8540 | 0.8260 | 0.8398 |
-| **EdgeRAG (350M Base)** | Ours (2026) | LFM2.5-350M | 0.41 GB | 14.2 ms | 0.8420 | 0.8210 | 0.8040 | 0.8124 |
-| **EdgeRAG (1.2B Instruct)** | Ours (2026) | LFM2.5-1.2B | **1.47 GB** | **25.0 ms** | **0.9160** | **1.0000** | **0.9100** | **0.9529** |
-| **EdgeRAG (1.2B Thinking)** | Ours (2026) | LFM2.5-1.2B | **1.47 GB** | **28.5 ms** | **0.9240** | **1.0000** | **0.9210** | **0.9610** |
+| **Self-RAG** | SOTA Baseline | Llama-2-13B | 14.5 GB | 180.0 ms | 0.8120 | 0.8350 | 0.7920 | 0.8129 |
+| **CRAG (Corrective RAG)** | SOTA Baseline | Llama-3-8B | 16.0 GB | 210.0 ms | 0.8460 | 0.8510 | 0.8010 | 0.8252 |
+| **GraphRAG** | SOTA Baseline | GPT-4o / 70B | 24.0 GB | 1200.0 ms | 0.8840 | 0.8720 | 0.8340 | 0.8524 |
+| **Dense-ColBERT** | SOTA Baseline | Llama-3-8B | 16.2 GB | 145.0 ms | 0.8620 | 0.8540 | 0.8260 | 0.8398 |
+| **EdgeRAG (350M Base)** | Ours | LFM2.5-350M | 0.41 GB | 14.2 ms | 0.8420 | 0.8210 | 0.8040 | 0.8124 |
+| **EdgeRAG (1.2B Instruct)** | Ours | LFM2.5-1.2B | **1.47 GB** | **25.0 ms** | **0.9160** | **1.0000** | **0.9100** | **0.9529** |
+| **EdgeRAG (1.2B Thinking)** | Ours | LFM2.5-1.2B | **1.47 GB** | **28.5 ms** | **0.9240** | **1.0000** | **0.9210** | **0.9610** |
 
 ---
 
@@ -72,20 +72,11 @@ EdgeRAG-LFM2.5/
 │   ├── rag_pipeline.py                    # 3-Stage LFM2.5 Engine
 │   ├── evaluate.py                        # RAGAS Framework Evaluator
 │   ├── evaluate_metrics.py                # Synthetic Set Metrics Evaluator
-│   ├── generate_plots.py                  # Synthetic Set Plotter
-│   └── build_ieee_docx.py                 # Base Word Document Builder
+│   └── generate_plots.py                  # Synthetic Set Plotter
 │
 ├── benchmarks/                            # Real Benchmark Suite (HuggingFace HotpotQA)
 │   ├── evaluate_real_benchmarks.py        # 250-sample HotpotQA Evaluator
-│   ├── generate_real_benchmark_plots.py   # HotpotQA Chart Generator
-│   ├── build_real_benchmark_docx.py       # HotpotQA Word Document Builder
-│   └── build_full_4to5page_ieee_docx.py   # Full 4-5 Page IEEE Word Builder
-│
-├── paper/                                 # Academic Research Papers & Word Docs
-│   ├── ieee_conference_paper.md           # Markdown Version of Paper
-│   ├── EdgeRAG_IEEE_Paper.docx            # Base IEEE Word Paper (.docx)
-│   ├── EdgeRAG_IEEE_Paper_Full.docx       # Full 4-5 Page IEEE Word Paper (.docx)
-│   └── EdgeRAG_IEEE_Publication_Paper.docx # 100% Publication-Ready IEEE Paper (.docx)
+│   └── generate_real_benchmark_plots.py   # HotpotQA Chart Generator
 │
 ├── figures/                               # Publication Quality Charts (.png)
 │   ├── fig1_real_metrics.png              # HotpotQA Metrics Breakdown
@@ -127,34 +118,6 @@ python benchmarks/evaluate_real_benchmarks.py
 ### 4. Re-generate Visual Publication Charts
 ```bash
 python benchmarks/generate_real_benchmark_plots.py
-```
-
-### 5. Build IEEE Double-Column Word Document (.docx)
-```bash
-python benchmarks/build_full_4to5page_ieee_docx.py
-```
-
----
-
-## 📄 IEEE Conference Paper Download
-
-The paper is available in two formats:
-- **Microsoft Word (`.docx`)**: [`paper/EdgeRAG_IEEE_Publication_Paper.docx`](paper/EdgeRAG_IEEE_Publication_Paper.docx)
-- **Markdown (`.md`)**: [`paper/ieee_conference_paper.md`](paper/ieee_conference_paper.md)
-
----
-
-## 📖 Citation
-
-If you use EdgeRAG or its benchmark suite in your research, please cite our paper:
-
-```bibtex
-@inproceedings{rivera2026edgerag,
-  title={EdgeRAG: A Sub-2B Parameter Unified RAG Stack via Hybrid Liquid Foundation Models},
-  author={Rivera, Alex and Sharma, Priya and Chen, David K.},
-  booktitle={Proceedings of the IEEE International Conference on AI & Edge Computing},
-  year={2026}
-}
 ```
 
 ---
