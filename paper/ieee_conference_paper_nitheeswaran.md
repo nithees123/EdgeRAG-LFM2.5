@@ -18,9 +18,9 @@ Retrieval-Augmented Generation (RAG) grounds Large Language Models (LLMs) in dom
 Retrieval-Augmented Generation (RAG) has emerged as a foundational paradigm in natural language processing by marrying static parametric memory in language models with dynamic non-parametric retrieval from external vector repositories [1]. In security-critical and privacy-sensitive domain deployments (e.g., financial intelligence, medical systems, mobile cyber defense), RAG systems must deliver verifiable inline citations while guaranteeing strict data confidentiality.
 
 However, state-of-the-art production RAG frameworks exhibit three critical vulnerabilities when evaluated for edge deployment:
-1. **Excessive Memory Overhead:** Cloud-centric baselines such as GraphRAG [2] and Self-RAG [3] rely on 7B to 70B parameter Transformer backbones requiring 14.5 GB to 24.0 GB of RAM/VRAM, preventing local execution on edge nodes.
-2. **Severe Latency Bottlenecks:** Iterative self-reflection tokens and multi-hop graph traversals introduce Time-To-First-Token (TTFT) latencies between 140 ms and 1200 ms, violating real-time interactivity requirements.
-3. **Privacy and Cyber Security Vulnerabilities:** Offloading sensitive domain knowledge queries to cloud APIs exposes organizations to eavesdropping, data interception, and prompt injection vectors.
+1) **Excessive Memory Overhead:** Cloud-centric baselines such as GraphRAG [2] and Self-RAG [3] rely on 7B to 70B parameter Transformer backbones requiring 14.5 GB to 24.0 GB of RAM/VRAM, preventing local execution on edge nodes.
+2) **Severe Latency Bottlenecks:** Iterative self-reflection tokens and multi-hop graph traversals introduce Time-To-First-Token (TTFT) latencies between 140 ms and 1200 ms, violating real-time interactivity requirements.
+3) **Privacy and Cyber Security Vulnerabilities:** Offloading sensitive domain knowledge queries to cloud APIs exposes organizations to eavesdropping, data interception, and prompt injection vectors.
 
 To overcome these bottlenecks, we introduce **EdgeRAG**, a unified sub-2B parameter RAG pipeline designed entirely using the Liquid AI LFM2.5 model family [4]. By interleaving continuous-time Liquid Interleaved Variable (LIV) convolutions with Grouped Query Attention (GQA), EdgeRAG achieves cloud-grade precision (1.0000 Precision) under a 1.47 GB RAM footprint with a 25.0 ms TTFT.
 
@@ -45,17 +45,17 @@ EdgeRAG processes user queries through a 3-stage unified pipeline utilizing spec
 ### Stage 1: Dense-Sparse Hybrid Retrieval (LFM2.5-Embedding-350M + BM25)
 Document corpora are partitioned into 512-token chunks (64-token overlap) and embedded into 1024-d dense vectors via *LFM2.5-Embedding-350M*. Dense cosine similarity scores are fused with lexical BM25 scores using Reciprocal Rank Fusion (k=60):
 
-$$RRF(d) = \sum_{m \in \{	ext{Dense}, 	ext{BM25}\}} rac{1}{60 + r_m(d)} \quad (1)$$
+$$RRF(d) = \sum_{m \in \{\text{Dense}, \text{BM25}\}} \frac{1}{60 + r_m(d)} \quad (1)$$
 
 ### Stage 2: Late-Interaction Reranking (LFM2.5-ColBERT-350M)
 The top 20 candidate chunks undergo late-interaction token-level reranking using *LFM2.5-ColBERT-350M* via the MaxSim operator:
 
-$$S_{	ext{MaxSim}}(q, d) = \sum_{i=1}^{|q|} \max_{j=1}^{|d|} \left( E_{q,i} \cdot E_{d,j}^T ight) \quad (2)$$
+$$S_{\text{MaxSim}}(q, d) = \sum_{i=1}^{|q|} \max_{j=1}^{|d|} \left( E_{q,i} \cdot E_{d,j}^T \right) \quad (2)$$
 
 ### Stage 3: Grounded Generation (LFM2.5-1.2B-Instruct Hybrid Backbone)
 The top 5 reranked passages feed into *LFM2.5-1.2B-Instruct*. The generator utilizes 10 Liquid Interleaved Variable (LIV) convolution blocks governed by continuous-time differential equations interleaved with 6 Grouped Query Attention (GQA) blocks:
 
-$$rac{dh(t)}{dt} = -\left[ rac{1}{	au} + f(x(t), h(t)) ight] h(t) + f(x(t), h(t)) S(t) \quad (3)$$
+$$\frac{dh(t)}{dt} = -\left[ \frac{1}{\tau} + f(x(t), h(t)) \right] h(t) + f(x(t), h(t)) S(t) \quad (3)$$
 
 ---
 
